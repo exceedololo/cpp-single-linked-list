@@ -99,7 +99,7 @@ class SingleLinkedList {
         // Возвращает ссылку на самого себя
         // Инкремент итератора, не указывающего на существующий элемент списка, приводит к неопределённому поведению
         BasicIterator& operator++() noexcept {
-            //assert(false);
+            assert(node_ != nullptr);
             // Заглушка. Реализуйте оператор самостоятельно
             node_ = node_->next_node;
             return *this;
@@ -122,7 +122,7 @@ class SingleLinkedList {
         // Вызов этого оператора у итератора, не указывающего на существующий элемент списка,
         // приводит к неопределённому поведению
         [[nodiscard]] reference operator*() const noexcept {
-            //assert(false);
+            assert(node_ != nullptr);
             // Не реализовано
             // Заглушка. Реализуйте оператор самостоятельно
             return node_ -> value;
@@ -132,7 +132,7 @@ class SingleLinkedList {
         // Вызов этого оператора у итератора, не указывающего на существующий элемент списка,
         // приводит к неопределённому поведению
         [[nodiscard]] pointer operator->() const noexcept {
-            //assert(false);
+            assert(node_ != nullptr);
             // Заглушка. Реализуйте оператор самостоятельно
             return &node_->value;
         }
@@ -230,11 +230,16 @@ public:
     }*/
     
     SingleLinkedList(const SingleLinkedList& other) {
-        SingleLinkedList tmp_invert;
+        Node* tail  = head_.next_node;
         for (auto it : other) {
-            tmp_invert.PushFront(it);
+            if (!tail) {
+                tail = new Node(other, head_.next_node);
+            } else {
+                tail->next_node = new Node(other, head_.next_node);
+                tail = tail->next_node;
+            }
+            size_++;
         }
-        //CopyElem(tmp_invert);
     }
     
     SingleLinkedList& operator=(const SingleLinkedList& rhs){
@@ -252,20 +257,22 @@ public:
     }
     
     Iterator InsertAfter(ConstIterator pos, const Type& value){
+        assert(pos.node_ != nullptr);
         pos.node_->next_node = new Node(value, pos.node_->next_node);
         ++size_;
         return Iterator{ pos.node_->next_node };
     }
 
     void PopFront() noexcept{
-        Node* second = head_.next_node->next_node;
         assert(!IsEmpty());
+        Node* second = head_.next_node->next_node;
         delete head_.next_node;
         head_.next_node = second;
         --size_;
     }
 
     Iterator EraseAfter(ConstIterator pos) noexcept {
+        assert(pos.node_ != nullptr);
         Node* second = pos.node_->next_node->next_node;
         delete pos.node_->next_node;
         pos.node_->next_node = second;
