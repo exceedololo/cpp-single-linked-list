@@ -217,7 +217,7 @@ public:
         // Реализуйте конструктор самостоятельно
     }
     
-    SingleLinkedList(const SingleLinkedList& other){
+    /*SingleLinkedList(const SingleLinkedList& other){
         SingleLinkedList tmp;
         vector<Type> tmp_vector;
         for (const auto& value : other) {
@@ -227,6 +227,14 @@ public:
             tmp.PushFront(*it);
         }
         swap(tmp);
+    }*/
+    
+    SingleLinkedList(const SingleLinkedList& other) {
+        SingleLinkedList tmp_invert;
+        for (auto it : other) {
+            tmp_invert.PushFront(it);
+        }
+        //CopyElem(tmp_invert);
     }
     
     SingleLinkedList& operator=(const SingleLinkedList& rhs){
@@ -251,6 +259,7 @@ public:
 
     void PopFront() noexcept{
         Node* second = head_.next_node->next_node;
+        assert(!IsEmpty());
         delete head_.next_node;
         head_.next_node = second;
         --size_;
