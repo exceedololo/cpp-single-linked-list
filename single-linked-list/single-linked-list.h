@@ -208,7 +208,6 @@ public:
     }
     
     ////////////////
-    //SingleLinkedList() = default;
 
     SingleLinkedList(std::initializer_list<Type> values){
         for (auto it = std::rbegin(values); it != std::rend(values); ++it){
@@ -217,25 +216,13 @@ public:
         // Реализуйте конструктор самостоятельно
     }
     
-    /*SingleLinkedList(const SingleLinkedList& other){
-        SingleLinkedList tmp;
-        vector<Type> tmp_vector;
-        for (const auto& value : other) {
-            tmp_vector.push_back(value);
-        }
-        for (auto it = std::rbegin(tmp_vector); it != std::rend(tmp_vector); ++it) {
-            tmp.PushFront(*it);
-        }
-        swap(tmp);
-    }*/
-    
     SingleLinkedList(const SingleLinkedList& other) {
         Node* tail  = head_.next_node;
         for (auto it : other) {
             if (!tail) {
-                tail = new Node(other, head_.next_node);
+                tail = new Node(it, head_.next_node);
             } else {
-                tail->next_node = new Node(other, head_.next_node);
+                tail->next_node = new Node(it, nullptr);
                 tail = tail->next_node;
             }
             size_++;
